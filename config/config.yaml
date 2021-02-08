@@ -1,0 +1,31 @@
+jwt:
+  sign-key: "gin-user"
+
+zap:
+  level: 'info'
+  format: 'console'
+  prefix: '[GIN-USER-ADMIN]'
+  director: 'logs'
+  link-name: 'latest_log'
+  show-line: true
+  encode-level: 'LowercaseColorLevelEncoder'
+  stacktrace-key: 'stacktrace'
+  log-in-console: true
+
+redis:
+  db0: 0
+  addr: "127.0.0.1:6379"
+  password: ""
+
+mysql:
+  username: "root"
+  password: "9090"
+  path: "127.0.0.1:3306"
+  db-name: "gin_user"
+  # 编码, loc=Local 和 parseTime 是为了解决 时区和时间问题
+  config: "charset=utf8mb4&parseTime=True"
+  max-idle-conns: 10
+  max-open-conns: 100
+  log-mode: false
+
+salt: "^$#0127)("

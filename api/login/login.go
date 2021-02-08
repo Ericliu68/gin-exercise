@@ -1,62 +1,46 @@
 package login
 
 import (
-	"fmt"
-	"log"
 	"net/http"
+	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
 
-	"gin-exercise/jwt_token"
-	"gin-exercise/login"
+	"gin-user/models"
+	"gin-user/utils"
 )
 
+// api 登录
 func Login(c *gin.Context) {
-	username := c.Query("username")
-	password := c.Query("password")
-
-	if username == "" {
-		c.JSON(http.StatusOK, gin.H{
-			"code": -1,
-			"msg":  "缺少必要参数",
-		})
+	var login models.UserLogin
+	// 判断名字和密码不能为空
+	if err := c.ShouldBindJSON(&login); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "请正确填写账户或密码"})
 		return
 	}
-	if password == "" {
-		c.JSON(http.StatusOK, gin.H{
-			"code": -1,
-			"msg":  "缺少必要参数",
-		})
+	// 判断帐号密码长度不能小于8
+	if utf8.RuneCountInString(login.UserName) < 5 || utf8.RuneCountInString(login.Password) < 6 {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "帐号密码长度太小"})
 		return
 	}
-
-	err := login.Login(username, password)
+	ok, err := utils.CheckPassword(login)
 	if err != nil {
-		log.Println(err)
-		c.JSON(http.StatusOK, gin.H{
-			"code": -1,
-			"msg":  fmt.Sprintf("%v", err),
-		})
+		utils.Logger.Info(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "服务器处理错误"})
 		return
 	}
 
-	token, err := jwt_token.GetToken(username)
-	if err != nil {
-		log.Println(err)
-		c.JSON(http.StatusOK, gin.H{
-			"code": -1,
-			"msg":  fmt.Sprintf("%v", err),
-		})
+	if ok {
+		dbUser, err := utils.GetDbUser(login)
+		token, err := utils.GetToken(login.UserName, dbUser.Role)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "服务器处理错误"})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": "登录成功", "token": token})
+		return
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "帐号密码不正确"})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": 0,
-		"msg":  "登录成功",
-		"data": gin.H{
-			"JWT":      token,
-			"username": username,
-		},
-	})
-
 }
