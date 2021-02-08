@@ -5,8 +5,8 @@ type Users struct {
 	Id       int    `gorm:"column:id;primaryKey"`
 	UserName string `gorm:"column:name;unique"`
 	Password string `gorm:"column:password"`
-	RoleID     int `gorm:"column:role"`
-	Role    string `gorm:"column:role"`
+	RoleID   int    `gorm:"column:role"`
+	Role     string `gorm:"column:role"`
 	Avatar   []byte `gorm:"column:avatar"`
 }
 
@@ -17,7 +17,7 @@ type UserLogin struct {
 }
 
 type Role struct {
-	Id int `gorm:"column:id;primaryKey"`
-	Role string `gorm:"column:role;unique"`
-	Permission int `gorm:"column:permission"`
+	Id         int    `gorm:"column:id;primaryKey"`
+	Role       string `gorm:"column:role;unique"`
+	Permission int    `gorm:"column:permission"`
 }

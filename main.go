@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/pprof"
+	"github.com/gin-gonic/gin"
 
 	"gin-user/api/login"
 	"gin-user/db"

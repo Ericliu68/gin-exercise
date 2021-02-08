@@ -117,7 +117,6 @@ func PerssionToken(c *gin.Context) {
 
 }
 
-
 func Exists(path string) bool {
 	_, err := os.Stat(path) //os.Stat获取文件信息
 	if err == nil {
@@ -179,7 +178,7 @@ func CreatePemKey() {
 	//panic(err)
 }
 
-func CreatePathPemKey()  {
+func CreatePathPemKey() {
 	Logger.Info("start")
 	ok := Exists("./pem")
 	if !ok {
